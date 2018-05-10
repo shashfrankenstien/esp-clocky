@@ -15,7 +15,7 @@ FONT_HEIGHT = 8
 FONT_WIDTH = 8
 
 ZIP_CODE = 11206
-OPENWEATHERMAP_KEY = '283703e743f7a777f2fa8eea6a2046a7'
+OPENWEATHERMAP_KEY = open('openweathermap.key', 'r').read().strip()
 WEATHER_BY_ZIP_URL = 'http://api.openweathermap.org/data/2.5/weather?zip={}&appid={}'.format(ZIP_CODE, OPENWEATHERMAP_KEY)
 WEATHER_UPDATE_INTERVAL = 20 #minutes
 
