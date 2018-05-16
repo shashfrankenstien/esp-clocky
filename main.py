@@ -3,6 +3,7 @@ import clocky
 import machine
 import ssd1306
 import sh1106
+import time
 
 def find_i2c():
 	pins = [16, 5, 4, 0, 2, 14, 12, 13, 15]
@@ -17,19 +18,23 @@ def find_i2c():
 			scn = None
 
 
-def boot():
-	machine.reset()
+boot = machine.reset
 
 
 
 pir = None#machine.Pin(0, machine.Pin.IN)
 
-clock_main = clocky.Face(clocky.WIDTH, clocky.HEIGHT, 
-				i2c_scl=4, i2c_sda=5, 
-				oled_driver=ssd1306.SSD1306_I2C, motion_sensor_pin=pir)
+# clock_main = clocky.Blink(clocky.WIDTH, clocky.HEIGHT, 
+# 				i2c_scl=4, i2c_sda=5, 
+# 				oled_driver=ssd1306.SSD1306_I2C)
 
-clock_ext = clocky.Face(clocky.WIDTH, clocky.HEIGHT, 
-				i2c_scl=14, i2c_sda=2, 
-				oled_driver=sh1106.SH1106_I2C)
 # clock.main_loop(threaded=False)
+# clock_main.show()
 
+clock_ext = clocky.Blink2(clocky.WIDTH, clocky.HEIGHT, 
+				i2c_scl=14, i2c_sda=2, 
+				oled_driver=sh1106.SH1106_I2C,
+				rotate=False)
+
+# clock_ext.test()
+clock_ext.loop()
