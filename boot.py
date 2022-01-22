@@ -5,6 +5,8 @@
 #webrepl.start()
 
 import network
+import machine
+boot = machine.reset
 wifi = network.WLAN(network.STA_IF)
 def wifi_connect(ssid, password):
     global wifi
@@ -19,3 +21,8 @@ def wifi_connect(ssid, password):
 wifi_connect('0_RedWilly', 'TG1672GE25912')
 from ntptime import settime
 settime()
+
+
+def touch(filename, code):
+	with open(filename, 'w') as f:
+		f.write(code)

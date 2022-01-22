@@ -3,11 +3,8 @@ import urequests as requests
 import urandom as random
 from machine import I2C, Pin
 import math
-
-try:
-	import threading
-except ImportError:
-	threading = None
+import uasyncio as asyncio
+loop = asyncio.get_event_loop()
 
 
 WIDTH = 128
@@ -24,6 +21,8 @@ WEATHER_UPDATE_INTERVAL = 15 #minutes
 SPLASH_MSG = ['Welcome', 'Hello', 'Bonjour', 'Guten Tag']
 
 
+
+
 class Clock(object):
 
 	WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fridat', 'Saturday', 'Sunday']
@@ -37,6 +36,8 @@ class Clock(object):
 			'day':Clock.WEEK_DAYS[weekday],
 			'time':"{:02d}:{:02d}:{:02d}".format(hour, minute, second)
 		}
+
+
 
 
 
@@ -87,7 +88,7 @@ class MotionSensor(object):
 	def register_trigger(self, f):
 		self.trigger = f
 
-	def _monitor(self):
+	async def _monitor(self):
 		self.running = True
 		old_val = self.pir.value()
 		while self.running:
@@ -95,14 +96,10 @@ class MotionSensor(object):
 			if new_val>old_val:
 				self.trigger()
 			old_val = new_val
-			time.sleep(0.05)
+			await asyncio.sleep_ms(50)
 
 	def monitor(self):
-		if threading!=None:
-			t = threading.Thread(target=self._monitor)
-			t.start()
-		else:
-			print("cannot run monitor as thread")
+		loop.create_task(self._monitor())
 
 	def stop(self):
 		self.running = False
@@ -156,13 +153,13 @@ class ScreenQuadrant(object):
 		x,y = self.center(txt)
 		self.oled.text(txt.upper() if upper else txt, x, y)
 
-	def splash_screen(self):
+	async def splash_screen(self):
 		text = SPLASH_MSG[random.getrandbits(2)]
 		self.oled.fill(0)
 		self.fill_center(text, upper=True)
 		self.oled.invert(1)
 		self.oled.show()
-		time.sleep(3)
+		await asyncio.sleep(3)
 		self.oled.invert(0)
 
 
@@ -249,6 +246,8 @@ class Eye(object):
 		for i in range(int(steps)):
 			self.shift_eyeball(_x_step, _y_step)
 			yield i
+
+
 
 
 

@@ -1,2 +1,3 @@
 esp_env/
 *.key
+*.pyc
